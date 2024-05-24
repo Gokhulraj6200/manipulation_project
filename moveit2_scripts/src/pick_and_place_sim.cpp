@@ -51,12 +51,12 @@ int main(int argc, char **argv) {
   // Go Home
   RCLCPP_INFO(LOGGER, "Going Home");
 
-  // joint_group_positions_arm[0] = 0.00;  // Shoulder Pan
+  joint_group_positions_arm[0] = 0.00;  // Shoulder Pan
   joint_group_positions_arm[1] = -2.50; // Shoulder Lift
   joint_group_positions_arm[2] = 1.50;  // Elbow
   joint_group_positions_arm[3] = -1.50; // Wrist 1
   joint_group_positions_arm[4] = -1.55; // Wrist 2
-  // joint_group_positions_arm[5] = 0.00;  // Wrist 3
+  joint_group_positions_arm[5] = 0.00;  // Wrist 3
 
   move_group_arm.setJointValueTarget(joint_group_positions_arm);
 
@@ -67,22 +67,38 @@ int main(int argc, char **argv) {
   move_group_arm.execute(my_plan_arm);
 
   // Pregrasp
-  RCLCPP_INFO(LOGGER, "Pregrasp Position");
+  RCLCPP_INFO(LOGGER, "Pregrasp Position using joint value target");
 
-  geometry_msgs::msg::Pose target_pose1;
-  target_pose1.orientation.x = -1.0;
-  target_pose1.orientation.y = 0.00;
-  target_pose1.orientation.z = 0.00;
-  target_pose1.orientation.w = 0.00;
-  target_pose1.position.x = 0.34;
-  target_pose1.position.y = -0.02;
-  target_pose1.position.z = 0.264;
-  move_group_arm.setPoseTarget(target_pose1);
+  joint_group_positions_arm[0] = -0.4532;  // Shoulder Pan
+  joint_group_positions_arm[1] = -1.48353; // Shoulder Lift
+  joint_group_positions_arm[2] = 1.67552;  // Elbow
+  joint_group_positions_arm[3] = -1.74533; // Wrist 1
+  joint_group_positions_arm[4] = -1.5708;  // Wrist 2
+  joint_group_positions_arm[5] = -2.02458; // Wrist 3
+
+  move_group_arm.setJointValueTarget(joint_group_positions_arm);
 
   success_arm = (move_group_arm.plan(my_plan_arm) ==
                  moveit::core::MoveItErrorCode::SUCCESS);
 
   move_group_arm.execute(my_plan_arm);
+
+  //   RCLCPP_INFO(LOGGER, "Pregrasp Position using pose value target");
+
+  //   geometry_msgs::msg::Pose target_pose1;
+  //   target_pose1.orientation.x = -1.0;
+  //   target_pose1.orientation.y = 0.00;
+  //   target_pose1.orientation.z = 0.00;
+  //   target_pose1.orientation.w = 0.00;
+  //   target_pose1.position.x = 0.34;
+  //   target_pose1.position.y = -0.02;
+  //   target_pose1.position.z = 0.264;
+  //   move_group_arm.setPoseTarget(target_pose1);
+
+  //   success_arm = (move_group_arm.plan(my_plan_arm) ==
+  //                  moveit::core::MoveItErrorCode::SUCCESS);
+
+  //   move_group_arm.execute(my_plan_arm);
 
   // Open Gripper
 
@@ -99,54 +115,108 @@ int main(int argc, char **argv) {
   // Approach
   RCLCPP_INFO(LOGGER, "Approach to object!");
 
-  std::vector<geometry_msgs::msg::Pose> approach_waypoints;
-  target_pose1.position.z -= 0.05;
-  approach_waypoints.push_back(target_pose1);
+  //   geometry_msgs::msg::Pose target_pose1;
 
-  target_pose1.position.z -= 0.05;
-  approach_waypoints.push_back(target_pose1);
+  //   std::vector<geometry_msgs::msg::Pose> approach_waypoints;
+  //   target_pose1.position.z -= 0.05;
+  //   approach_waypoints.push_back(target_pose1);
 
-  moveit_msgs::msg::RobotTrajectory trajectory_approach;
-  const double jump_threshold = 0.0;
-  const double eef_step = 0.01;
+  //   target_pose1.position.z -= 0.05;
+  //   approach_waypoints.push_back(target_pose1);
 
-  double fraction = move_group_arm.computeCartesianPath(
-      approach_waypoints, eef_step, jump_threshold, trajectory_approach);
+  //   moveit_msgs::msg::RobotTrajectory trajectory_approach;
+  //   const double jump_threshold = 0.0;
+  //   const double eef_step = 0.01;
 
-  move_group_arm.execute(trajectory_approach);
+  //   double fraction = move_group_arm.computeCartesianPath(
+  //       approach_waypoints, eef_step, jump_threshold, trajectory_approach);
+
+  //   move_group_arm.execute(trajectory_approach);
+
+  joint_group_positions_arm[0] = -0.4532;  // Shoulder Pan
+  joint_group_positions_arm[1] = -1.3326;  // Shoulder Lift
+  joint_group_positions_arm[2] = 1.96773;  // Elbow
+  joint_group_positions_arm[3] = -2.2062;  // Wrist 1
+  joint_group_positions_arm[4] = -1.5717;  // Wrist 2
+  joint_group_positions_arm[5] = -2.02458; // Wrist 3
+
+  move_group_arm.setJointValueTarget(joint_group_positions_arm);
+
+  success_arm = (move_group_arm.plan(my_plan_arm) ==
+                 moveit::core::MoveItErrorCode::SUCCESS);
+
+  move_group_arm.execute(my_plan_arm);
+  std::this_thread::sleep_for(std::chrono::seconds(2));
 
   // Close Gripper
 
-  RCLCPP_INFO(LOGGER, "Close Gripper!");
+  //   RCLCPP_INFO(LOGGER, "Close Gripper!");
 
-  joint_group_positions_gripper[2] = 0.645;
+  //   joint_group_positions_gripper[2] = 0.645;
 
-  move_group_gripper.setJointValueTarget(joint_group_positions_gripper);
+  //   move_group_gripper.setJointValueTarget(joint_group_positions_gripper);
 
-  success_gripper = (move_group_gripper.plan(my_plan_gripper) ==
-                     moveit::core::MoveItErrorCode::SUCCESS);
+  //   success_gripper = (move_group_gripper.plan(my_plan_gripper) ==
+  //                      moveit::core::MoveItErrorCode::SUCCESS);
 
-  move_group_gripper.execute(my_plan_gripper);
+  //   move_group_gripper.execute(my_plan_gripper);
 
+  //   std::this_thread::sleep_for(std::chrono::seconds(2));
+
+  float gripper_value = 0.6;
+  while (gripper_value <= 0.645) {
+    joint_group_positions_gripper[2] = gripper_value;
+    move_group_gripper.setJointValueTarget(joint_group_positions_gripper);
+    RCLCPP_INFO(LOGGER, "Closing gripper: %.3f.", gripper_value);
+    success_gripper = (move_group_gripper.plan(my_plan_gripper) ==
+                       moveit::core::MoveItErrorCode::SUCCESS);
+    if (success_gripper) {
+      RCLCPP_INFO(LOGGER, "Plan to actuate gipper: SUCCESS.");
+      RCLCPP_INFO(LOGGER, "Executing command.");
+      move_group_arm.execute(my_plan_gripper);
+      gripper_value += 0.005;
+    } else {
+      RCLCPP_INFO(LOGGER, "Plan to actuate gipper: FAIL.");
+      RCLCPP_INFO(LOGGER, "Aborting command.");
+      rclcpp::shutdown();
+      return 1;
+    }
+  }
   std::this_thread::sleep_for(std::chrono::seconds(2));
-
   // Retreat
 
   RCLCPP_INFO(LOGGER, "Retreat from object!");
 
-  std::vector<geometry_msgs::msg::Pose> retreat_waypoints;
-  target_pose1.position.z += 0.05;
-  retreat_waypoints.push_back(target_pose1);
+  //   geometry_msgs::msg::Pose target_pose1;
+  //   std::vector<geometry_msgs::msg::Pose> retreat_waypoints;
+  //   target_pose1.position.z += 0.005;
+  //   retreat_waypoints.push_back(target_pose1);
 
-  target_pose1.position.z += 0.05;
-  retreat_waypoints.push_back(target_pose1);
+  //   target_pose1.position.z += 0.05;
+  //   retreat_waypoints.push_back(target_pose1);
 
-  moveit_msgs::msg::RobotTrajectory trajectory_retreat;
+  //   moveit_msgs::msg::RobotTrajectory trajectory_retreat;
+  //   const double jump_threshold = 0.0;
+  //   const double eef_step = 0.01;
 
-  fraction = move_group_arm.computeCartesianPath(
-      retreat_waypoints, eef_step, jump_threshold, trajectory_retreat);
+  //   double fraction = move_group_arm.computeCartesianPath(
+  //       retreat_waypoints, eef_step, jump_threshold, trajectory_retreat);
 
-  move_group_arm.execute(trajectory_retreat);
+  //   move_group_arm.execute(trajectory_retreat);
+
+  joint_group_positions_arm[0] = -0.4532;  // Shoulder Pan
+  joint_group_positions_arm[1] = -1.48353; // Shoulder Lift
+  joint_group_positions_arm[2] = 1.67552;  // Elbow
+  joint_group_positions_arm[3] = -1.74533; // Wrist 1
+  joint_group_positions_arm[4] = -1.5708;  // Wrist 2
+  joint_group_positions_arm[5] = -2.02458; // Wrist 3
+
+  move_group_arm.setJointValueTarget(joint_group_positions_arm);
+
+  success_arm = (move_group_arm.plan(my_plan_arm) ==
+                 moveit::core::MoveItErrorCode::SUCCESS);
+
+  move_group_arm.execute(my_plan_arm);
 
   // Place
 
@@ -156,7 +226,12 @@ int main(int argc, char **argv) {
   current_state_arm->copyJointGroupPositions(joint_model_group_arm,
                                              joint_group_positions_arm);
 
-  joint_group_positions_arm[0] = 1.0; // Shoulder Pan
+  joint_group_positions_arm[0] = 2.82743;  // Shoulder Pan
+  joint_group_positions_arm[1] = -1.48353; // Shoulder Lift
+  joint_group_positions_arm[2] = 1.67552;  // Elbow
+  joint_group_positions_arm[3] = -1.74533; // Wrist 1
+  joint_group_positions_arm[4] = -1.5708;  // Wrist 2
+  joint_group_positions_arm[5] = -2.02458; // Wrist 3
 
   move_group_arm.setJointValueTarget(joint_group_positions_arm);
 
