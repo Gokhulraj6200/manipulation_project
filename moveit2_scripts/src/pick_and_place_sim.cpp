@@ -133,12 +133,12 @@ int main(int argc, char **argv) {
 
   //   move_group_arm.execute(trajectory_approach);
 
-  joint_group_positions_arm[0] = -0.4532;  // Shoulder Pan
-  joint_group_positions_arm[1] = -1.3326;  // Shoulder Lift
-  joint_group_positions_arm[2] = 1.96773;  // Elbow
-  joint_group_positions_arm[3] = -2.2062;  // Wrist 1
-  joint_group_positions_arm[4] = -1.5717;  // Wrist 2
-  joint_group_positions_arm[5] = -2.02458; // Wrist 3
+  joint_group_positions_arm[0] = -0.4536; // Shoulder Pan
+  joint_group_positions_arm[1] = -1.3326; // Shoulder Lift
+  joint_group_positions_arm[2] = 1.96773; // Elbow
+  joint_group_positions_arm[3] = -2.2062; // Wrist 1
+  joint_group_positions_arm[4] = -1.5717; // Wrist 2
+  joint_group_positions_arm[5] = -2.0234; // Wrist 3
 
   move_group_arm.setJointValueTarget(joint_group_positions_arm);
 
@@ -163,7 +163,7 @@ int main(int argc, char **argv) {
 
   //   std::this_thread::sleep_for(std::chrono::seconds(2));
 
-  float gripper_value = 0.6;
+  float gripper_value = 0.60;
   while (gripper_value <= 0.645) {
     joint_group_positions_gripper[2] = gripper_value;
     move_group_gripper.setJointValueTarget(joint_group_positions_gripper);
@@ -174,7 +174,7 @@ int main(int argc, char **argv) {
       RCLCPP_INFO(LOGGER, "Plan to actuate gipper: SUCCESS.");
       RCLCPP_INFO(LOGGER, "Executing command.");
       move_group_arm.execute(my_plan_gripper);
-      gripper_value += 0.005;
+      gripper_value += 0.001;
     } else {
       RCLCPP_INFO(LOGGER, "Plan to actuate gipper: FAIL.");
       RCLCPP_INFO(LOGGER, "Aborting command.");
