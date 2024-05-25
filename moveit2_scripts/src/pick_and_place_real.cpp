@@ -148,15 +148,36 @@ int main(int argc, char **argv) {
 
   RCLCPP_INFO(LOGGER, "Close Gripper!");
 
-  joint_group_positions_gripper[2] = 0.650;
+  //   joint_group_positions_gripper[2] = 0.650;
 
-  move_group_gripper.setJointValueTarget(joint_group_positions_gripper);
+  //   move_group_gripper.setJointValueTarget(joint_group_positions_gripper);
 
-  success_gripper = (move_group_gripper.plan(my_plan_gripper) ==
-                     moveit::core::MoveItErrorCode::SUCCESS);
+  //   success_gripper = (move_group_gripper.plan(my_plan_gripper) ==
+  //                      moveit::core::MoveItErrorCode::SUCCESS);
 
-  move_group_gripper.execute(my_plan_gripper);
+  //   move_group_gripper.execute(my_plan_gripper);
 
+  //   std::this_thread::sleep_for(std::chrono::seconds(2));
+
+  float gripper_value = 0.620;
+  while (gripper_value <= 0.668) {
+    joint_group_positions_gripper[2] = gripper_value;
+    move_group_gripper.setJointValueTarget(joint_group_positions_gripper);
+    RCLCPP_INFO(LOGGER, "Closing gripper: %.3f.", gripper_value);
+    success_gripper = (move_group_gripper.plan(my_plan_gripper) ==
+                       moveit::core::MoveItErrorCode::SUCCESS);
+    if (success_gripper) {
+      RCLCPP_INFO(LOGGER, "Plan to actuate gipper: SUCCESS.");
+      RCLCPP_INFO(LOGGER, "Executing command.");
+      move_group_arm.execute(my_plan_gripper);
+      gripper_value += 0.001;
+    } else {
+      RCLCPP_INFO(LOGGER, "Plan to actuate gipper: FAIL.");
+      RCLCPP_INFO(LOGGER, "Aborting command.");
+      rclcpp::shutdown();
+      return 1;
+    }
+  }
   std::this_thread::sleep_for(std::chrono::seconds(2));
 
   // Retreat
